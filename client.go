@@ -67,6 +67,8 @@ func (genesis *Genesis) RequestMaster(req *http.Request, out interface{}) ([]byt
 		return nil, err, nil
 	}
 	bodyResponse, err := ioutil.ReadAll(res.Body)
+
+	fmt.Printf("bodyResponse %s\n", string(bodyResponse))
 	if res.StatusCode > 202 {
 		var errAPI Error
 		err = json.Unmarshal(bodyResponse, &errAPI)
@@ -108,7 +110,6 @@ func (genesis *Genesis) RequestToken() (*TokenResponse, error) {
 	}
 
 	endpoint := fmt.Sprintf("%s/%s", url, "customer/v1/connect/token")
-	fmt.Printf("payload %s\n", payload.String())
 	req, err := http.NewRequest("POST", endpoint, payload)
 	if err != nil {
 		return nil, err
@@ -119,7 +120,6 @@ func (genesis *Genesis) RequestToken() (*TokenResponse, error) {
 		return nil, err
 	}
 	bodyResponse, err := ioutil.ReadAll(res.Body)
-	fmt.Printf("response %s\n", string(bodyResponse))
 	if res.StatusCode > 202 {
 		var errAPI Error
 		err = json.Unmarshal(bodyResponse, &errAPI)
