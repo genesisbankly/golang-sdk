@@ -6,9 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 )
 
@@ -27,7 +26,7 @@ type Error struct {
 }
 
 type TokenRequest struct {
-	GrantType    string `json:"grant_type	"`
+	GrantType    string `json:"grant_type"`
 	ClientID     string `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
 }
@@ -63,10 +62,6 @@ func (genesis *Genesis) Request(token, method, action string, body []byte, out i
 }
 
 func (genesis *Genesis) RequestMaster(req *http.Request, out interface{}) ([]byte, error, *Error) {
-	_, err := genesis.RequestToken()
-	if err != nil {
-		return nil, err, nil
-	}
 	res, err := genesis.client.Do(req)
 	if err != nil {
 		return nil, err, nil
@@ -92,30 +87,39 @@ func (genesis *Genesis) RequestMaster(req *http.Request, out interface{}) ([]byt
 }
 
 func (Genesis *Genesis) devProd() string {
-	if Genesis.Env == "develop" {
-		return "https://api.sandbox.genesisapp.cloud"
+	if Genesis.Env == "production" {
+		return "https://api.genesisapp.cloud"
 	}
-	return "https://api.genesisapp.cloud"
+	return "https://api.sandbox.genesisapp.cloud"
 }
 
 func (genesis *Genesis) RequestToken() (*TokenResponse, error) {
 	var tokenResponse TokenResponse
-	params := url.Values{}
-	params.Add("client_secret", genesis.ClientSecret)
-	params.Add("grant_type", "client_credentials")
-	params.Add("client_id", genesis.ClientID)
 	url := genesis.devProd()
-	endpoint := fmt.Sprintf("%s/%s", url, "/connect/token")
-	req, err := http.NewRequest("POST", endpoint, strings.NewReader(params.Encode()))
+
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+	writer.WriteField("client_secret", genesis.ClientSecret)
+	writer.WriteField("grant_type", "all")
+	writer.WriteField("client_id", genesis.ClientID)
+	err := writer.Close()
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	endpoint := fmt.Sprintf("%s/%s", url, "customer/v1/connect/token")
+	fmt.Printf("payload %s\n", payload.String())
+	req, err := http.NewRequest("POST", endpoint, payload)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	bodyResponse, err := ioutil.ReadAll(res.Body)
+	fmt.Printf("response %s\n", string(bodyResponse))
 	if res.StatusCode > 202 {
 		var errAPI Error
 		err = json.Unmarshal(bodyResponse, &errAPI)
