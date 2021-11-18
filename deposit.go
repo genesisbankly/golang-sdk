@@ -49,16 +49,16 @@ type DepositPagesQuery struct {
 }
 
 type DepositQuery struct {
-	Source         string   `json:"source"`
-	To             int64    `json:"to"`
-	From           int64    `json:"from"`
-	CompanyID      int32    `json:"-"`
-	Status         string   `json:"status"`
-	Type           string   `json:"type"`
-	Protocol       string   `json:"protocol"`
-	ProcessingTo   int64    `json:"processing_to"`
-	ProcessingFrom int64    `json:"processing_from"`
-	Ids            []string `json:"ids"`
+	Source         string     `json:"source"`
+	To             *time.Time `json:"to"`
+	From           *time.Time `json:"from"`
+	CompanyID      int32      `json:"-"`
+	Status         string     `json:"status"`
+	Type           string     `json:"type"`
+	Protocol       string     `json:"protocol"`
+	ProcessingTo   *time.Time `json:"processing_to"`
+	ProcessingFrom *time.Time `json:"processing_from"`
+	Ids            []string   `json:"ids"`
 }
 type DepositOrderBy struct {
 	Field     string `json:"field"`
