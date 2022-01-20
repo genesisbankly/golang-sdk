@@ -90,9 +90,9 @@ func (genesis *Genesis) RequestMaster(req *http.Request, out interface{}) ([]byt
 
 func (Genesis *Genesis) devProd() string {
 	if Genesis.Env == "production" {
-		return "https://api.genesisapp.cloud"
+		return "https://api.genesispay.online"
 	}
-	return "https://api.sandbox.genesisapp.cloud"
+	return "https://api.sandbox.genesispay.online"
 }
 
 func (genesis *Genesis) RequestToken() (*TokenResponse, error) {
