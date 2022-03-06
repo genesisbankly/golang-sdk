@@ -2,6 +2,7 @@ package genesis
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -96,6 +97,23 @@ func (d *DepositClient) Create(req CreateDeposit) (*Deposit, *Error, error) {
 		return nil, nil, err
 	}
 	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/deposit", data, &response)
+	if err != nil {
+		return nil, nil, err
+	}
+	if errAPI != nil {
+		return nil, errAPI, nil
+	}
+	return response, nil, nil
+}
+
+//Create - create a new wallet
+func (d *DepositClient) Get(token string) (*Deposit, *Error, error) {
+	var response *Deposit
+	responseToken, err := d.client.RequestToken()
+	if err != nil {
+		return nil, nil, err
+	}
+	err, errAPI := d.client.Request(responseToken.AccessToken, "GET", fmt.Sprintf("payment/v1/api/deposit/%s", token), nil, &response)
 	if err != nil {
 		return nil, nil, err
 	}
