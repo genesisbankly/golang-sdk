@@ -45,9 +45,9 @@ type CreateBrcodeRequest struct {
 }
 
 type CreatePixRequest struct {
-	Label int32   `json:"label"`
-	Value float32 `json:"value,omitempty"`
-	Type  string  `json:"type"`
+	Label string `json:"label"`
+	Value string `json:"value"`
+	Type  string `json:"type"`
 }
 
 type Brcode struct {
