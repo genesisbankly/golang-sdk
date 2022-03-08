@@ -7,8 +7,16 @@ import (
 )
 
 type PixKey struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
+	ID         int32     `json:"id"`
+	Label      string    `json:"label"`
+	Active     bool      `json:"active"`
+	Type       string    `json:"type"`
+	Value      string    `json:"value"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+	Deleted    bool      `json:"-"`
+	CompanyID  int32     `json:"company_id"`
+	EndToEndId string    `json:"endToEndId"`
 }
 
 type PixKeyHolder struct {
@@ -34,6 +42,12 @@ type CreateBrcodeRequest struct {
 	PixId       int32   `json:"pix_id"`
 	Amount      float32 `json:"amount,omitempty"`
 	Description string  `json:"description"`
+}
+
+type CreatePixRequest struct {
+	Label int32   `json:"label"`
+	Value float32 `json:"value,omitempty"`
+	Type  string  `json:"type"`
 }
 
 type Brcode struct {
@@ -79,6 +93,23 @@ func (d *PixClient) CreateBrcode(req CreateBrcodeRequest) (*Brcode, *Error, erro
 		return nil, nil, err
 	}
 	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/brcode", data, &response)
+	if err != nil {
+		return nil, nil, err
+	}
+	if errAPI != nil {
+		return nil, errAPI, nil
+	}
+	return response, nil, nil
+}
+
+func (d *PixClient) CreteKey(req CreatePixRequest) (*PixKey, *Error, error) {
+	data, _ := json.Marshal(req)
+	var response *PixKey
+	responseToken, err := d.client.RequestToken()
+	if err != nil {
+		return nil, nil, err
+	}
+	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/pix", data, &response)
 	if err != nil {
 		return nil, nil, err
 	}
