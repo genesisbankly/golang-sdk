@@ -40,10 +40,14 @@ type Transfer struct {
 }
 
 type CreateTransfer struct {
-	Type    string  `json:"type"`
-	PixKey  string  `json:"pix_key"`
-	PixType string  `json:"pix_type"`
-	Amount  float32 `json:"amount"`
+	Amount     float32 `json:"amount"`
+	Branch     string  `json:"branch"`
+	Document   string  `json:"document"`
+	BankNumber string  `json:"bank_number"`
+	Name       string  `json:"name"`
+	Type       string  `json:"type"`
+	PixKey     string  `json:"pix_key"`
+	PixType    string  `json:"pix_type"`
 }
 
 type TransferPagesQuery struct {
