@@ -41,13 +41,14 @@ type Transfer struct {
 
 type CreateTransfer struct {
 	Amount     float32 `json:"amount"`
-	Branch     string  `json:"branch"`
-	Document   string  `json:"document"`
-	BankNumber string  `json:"bank_number"`
-	Name       string  `json:"name"`
+	Branch     string  `json:"branch,omitempty"`
+	Document   string  `json:"document,omitempty"`
+	BankNumber string  `json:"bank_number,omitempty"`
+	Name       string  `json:"name,omitempty"`
 	Type       string  `json:"type"`
-	PixKey     string  `json:"pix_key"`
-	PixType    string  `json:"pix_type"`
+	PixKey     string  `json:"pix_key,omitempty"`
+	PixType    string  `json:"pix_type,omitempty"`
+	Account    string  `json:"account,omitempty"`
 }
 
 type TransferPagesQuery struct {
