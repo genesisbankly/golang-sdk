@@ -40,6 +40,7 @@ type Deposit struct {
 	BrcodeKey        string          `json:"brcodekey"`
 	BrcodeID         int32           `json:"brcode_id"`
 	Channel          string          `json:"channel"`
+	AddressKey       string          `json:"address_key"`
 }
 
 type DepositPagesQuery struct {
