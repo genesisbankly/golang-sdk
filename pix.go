@@ -44,10 +44,21 @@ type CreateBrcodeRequest struct {
 	Description string  `json:"description"`
 }
 
+type BrcodeRef struct {
+	Value       string `json:"value"`
+	Description string `json:"description"`
+}
+
 type CreatePixRequest struct {
 	Label string `json:"label"`
 	Value string `json:"value"`
 	Type  string `json:"type"`
+}
+
+type CreateBrcodeRef struct {
+	CompanyID   int32  `json:"-"`
+	Key         string `json:"key" validate:"required"`
+	Description string `json:"description"`
 }
 
 type Brcode struct {
@@ -93,6 +104,23 @@ func (d *PixClient) CreateBrcode(req CreateBrcodeRequest) (*Brcode, *Error, erro
 		return nil, nil, err
 	}
 	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/brcode", data, &response)
+	if err != nil {
+		return nil, nil, err
+	}
+	if errAPI != nil {
+		return nil, errAPI, nil
+	}
+	return response, nil, nil
+}
+
+func (d *PixClient) CreateBrcodeRef(req CreateBrcodeRef) (*BrcodeRef, *Error, error) {
+	data, _ := json.Marshal(req)
+	var response *BrcodeRef
+	responseToken, err := d.client.RequestToken()
+	if err != nil {
+		return nil, nil, err
+	}
+	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/brcode/ref", data, &response)
 	if err != nil {
 		return nil, nil, err
 	}
