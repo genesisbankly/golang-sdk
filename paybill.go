@@ -108,7 +108,7 @@ func (d *PayBillClient) Create(req PayBillBoleto) (*PayBill, *Error, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/paybill", data, &response)
+	err, errAPI := d.client.Request(responseToken.AccessToken, "POST", "payment/v1/api/paybill/boleto", data, &response)
 	if err != nil {
 		return nil, nil, err
 	}
